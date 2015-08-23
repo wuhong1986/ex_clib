@@ -1,6 +1,6 @@
 /* {{{
  * =============================================================================
- *      Filename    :   exstr_ing.c
+ *      Filename    :   ex_string.c
  *      Description :
  *      Created     :   2015-08-22 20:08:40
  *      Author      :   Wu Hong
@@ -12,7 +12,7 @@
 #include <ctype.h>
 #include "../include/ex_string.h"
 
-char* exstr_dup(const char *str)
+char* ex_strdup(const char *str)
 {
     int   len = 0;
     char *buf = NULL;
@@ -27,7 +27,7 @@ char* exstr_dup(const char *str)
     return buf;
 }
 
-char* exstr_ndup(const char *str, size_t n)
+char* ex_strndup(const char *str, size_t n)
 {
     char* str_copy = (char*)malloc(n+1);
 
@@ -40,7 +40,7 @@ char* exstr_ndup(const char *str, size_t n)
 }
 
 
-char* exstr_tok_r(char* string,             /* string to break into tokens */
+char* ex_strtok_r(char* string,             /* string to break into tokens */
                   const char * separators,	/* the separators */
                   char** ppLast             /* pointer to serve as string index */)
 {
@@ -53,34 +53,34 @@ char* exstr_tok_r(char* string,             /* string to break into tokens */
     return (string);
 }
 
-int  exstr_split (const char *str, const char *delimiter, char ***parts)
+int  ex_str_split (const char *str, const char *delimiter, char ***parts)
 {
     char *pch = NULL;
     char *saveptr = NULL;
     int i = 0;
     int cnt = 0;
-    char *tmp = exstr_dup(str);
+    char *tmp = ex_strdup(str);
     char **result = NULL;
 
-    cnt    = exstr_substr_count(str, delimiter) + 1;
+    cnt    = ex_str_substr_count(str, delimiter) + 1;
     *parts = (char**)malloc(sizeof(char**) * cnt);
     result = *parts;
 
-    pch = exstr_tok_r(tmp, delimiter, &saveptr);
+    pch = ex_strtok_r(tmp, delimiter, &saveptr);
 
-    result[i++] = exstr_dup(pch);
+    result[i++] = ex_strdup(pch);
 
     while (pch) {
-        pch = exstr_tok_r(NULL, delimiter, &saveptr);
+        pch = ex_strtok_r(NULL, delimiter, &saveptr);
         if (NULL == pch) break;
-        result[i++] = exstr_dup(pch);
+        result[i++] = ex_strdup(pch);
     }
 
     free(tmp);
     return i;
 }
 
-void exstr_split_free(char **parts, int cnt)
+void ex_str_split_free(char **parts, int cnt)
 {
     int i = 0;
 
@@ -91,7 +91,7 @@ void exstr_split_free(char **parts, int cnt)
     free(parts);
 }
 
-bool exstr_starts_with(const char *str, const char *start)
+bool ex_str_starts_with(const char *str, const char *start)
 {
     for (; ; str++, start++) {
         if (!*start) {
@@ -102,7 +102,7 @@ bool exstr_starts_with(const char *str, const char *start)
     }
 }
 
-bool exstr_ends_with(const char *str, const char *end)
+bool ex_str_ends_with(const char *str, const char *end)
 {
     int end_len = 0;
     int str_len = 0;
@@ -117,7 +117,7 @@ bool exstr_ends_with(const char *str, const char *end)
          : !strcmp(str + str_len - end_len, end);
 }
 
-int   exstr_substr_count(const char *str, const char *sub)
+int   ex_str_substr_count(const char *str, const char *sub)
 {
     char *pos = (char *)str;
     int i = 0;
@@ -135,15 +135,15 @@ int   exstr_substr_count(const char *str, const char *sub)
     return i;
 }
 
-char* exstr_replace(const char *str, const char *sub, const char *replace)
+char* ex_str_replace(const char *str, const char *sub, const char *replace)
 {
     char *pos = (char *) str;
     char *result = NULL;
     char *current = NULL;
-    int count = exstr_substr_count(str, sub);
+    int count = ex_str_substr_count(str, sub);
     int size = 0;
 
-    if (0 >= count) return exstr_dup(str);
+    if (0 >= count) return ex_strdup(str);
 
     size = (strlen(str) - (strlen(sub) * count) + strlen(replace) * count) + 1;
 
@@ -165,7 +165,7 @@ char* exstr_replace(const char *str, const char *sub, const char *replace)
     return result;
 }
 
-char* exstr_triml(char *str)
+char* ex_str_triml(char *str)
 {
     int len = strlen(str);
     char *cur = str;
@@ -180,7 +180,7 @@ char* exstr_triml(char *str)
     return str;
 }
 
-char* exstr_trimr(char *str)
+char* ex_str_trimr(char *str)
 {
     int len = strlen(str);
     char *cur = str + len - 1;
@@ -191,40 +191,40 @@ char* exstr_trimr(char *str)
     return str;
 }
 
-char* exstr_trim(char *str)
+char* ex_str_trim(char *str)
 {
-    exstr_trimr(str);
-    exstr_triml(str);
+    ex_str_trimr(str);
+    ex_str_triml(str);
 
     return str;
 }
 
-const char* exstr_bool(bool value)
+const char* ex_str_bool(bool value)
 {
     return value ? "true" : "false";
 }
 
-const char* exstr_Bool(bool value)
+const char* ex_str_Bool(bool value)
 {
     return value ? "True" : "False";
 }
 
-const char* exstr_BOOL(bool value)
+const char* ex_str_BOOL(bool value)
 {
     return value ? "TRUE" : "FALSE";
 }
 
-const char* exstr_onoff(bool value)
+const char* ex_str_onoff(bool value)
 {
     return value ? "on" : "off";
 }
 
-const char* exstr_OnOff(bool value)
+const char* ex_str_OnOff(bool value)
 {
     return value ? "On" : "Off";
 }
 
-const char* exstr_ONOFF(bool value)
+const char* ex_str_ONOFF(bool value)
 {
     return value ? "ON" : "OFF";
 }
