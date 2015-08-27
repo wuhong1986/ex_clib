@@ -21,7 +21,8 @@ char* ex_strndup(const char *str, size_t n);
 
 char* ex_strtok_r(char *str, const char *delim, char **saveptr);
 
-int  ex_str_split (const char *str, const char *delimiter, char ***parts);
+int  ex_str_split_substr(const char *str, const char *delimiter, char ***parts);
+int  ex_str_split_charset(const char *str, const char *charset, char ***parts);
 void ex_str_split_free(char **parts, int cnt);
 
 bool ex_str_starts_with(const char *str, const char *start);

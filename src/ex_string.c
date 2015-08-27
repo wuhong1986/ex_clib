@@ -53,7 +53,24 @@ char* ex_strtok_r(char* string,             /* string to break into tokens */
     return (string);
 }
 
-int  ex_str_split (const char *str, const char *delimiter, char ***parts)
+int ex_str_split_cnt(const char *str, const char *delimiter)
+{
+    char *s = (char*)str;
+    int cnt = 0;
+
+    while(s && s[0] != '\0') {
+        /* printf("hee %s\n", s); */
+        while(s && s[0] != '\0' && strchr(delimiter, *s)) s++;
+        ++cnt;
+        while(s && s[0] != '\0' && !strchr(delimiter, *s)) s++;
+    }
+        /* exit(0); */
+
+    return cnt;
+}
+
+
+int  ex_str_split_charset(const char *str, const char *charset, char ***parts)
 {
     char *pch = NULL;
     char *saveptr = NULL;
@@ -62,21 +79,55 @@ int  ex_str_split (const char *str, const char *delimiter, char ***parts)
     char *tmp = ex_strdup(str);
     char **result = NULL;
 
-    cnt    = ex_str_substr_count(str, delimiter) + 1;
-    *parts = (char**)malloc(sizeof(char**) * cnt);
+    cnt    = ex_str_split_cnt(str, charset) + 1;
+    *parts = (char**)malloc(sizeof(char*) * cnt);
     result = *parts;
 
-    pch = ex_strtok_r(tmp, delimiter, &saveptr);
+    pch = ex_strtok_r(tmp, charset, &saveptr);
 
-    result[i++] = ex_strdup(pch);
+    result[i]= ex_strdup(pch);
+    ++i;
 
     while (pch) {
-        pch = ex_strtok_r(NULL, delimiter, &saveptr);
+        pch = ex_strtok_r(NULL, charset, &saveptr);
         if (NULL == pch) break;
-        result[i++] = ex_strdup(pch);
+        result[i] = ex_strdup(pch);
+        ++i;
+        if(i >= cnt) { break; }
     }
 
     free(tmp);
+    return i;
+}
+
+int  ex_str_split_substr(const char *str, const char *delimiter, char ***parts)
+{
+    char *pch = (char*)str;
+    int i = 0;
+    int l = 0;
+    int cnt = 0;
+    int offset = 0;
+    char **result = NULL;
+
+    cnt    = ex_str_substr_count(str, delimiter) + 1;
+    *parts = (char**)malloc(sizeof(char*) * cnt);
+    result = *parts;
+
+    printf("cnt:%d\n", cnt);
+
+    l = strlen(delimiter);
+    for(i = 0; i < cnt; ++i) {
+        pch = strstr(pch, delimiter);
+
+        if(pch) {
+            result[i] = ex_strndup(str + offset, pch - str - offset);
+            offset += strlen(result[i]) + l;
+            pch += l;
+        } else {
+            result[i] = ex_strdup(str + offset);
+        }
+    }
+
     return i;
 }
 

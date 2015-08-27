@@ -51,14 +51,34 @@ void test_exstr_ends_with(void)
     CU_ASSERT(true == ex_str_ends_with("hello", "hello"));
 }
 
-void test_exstr_split(void)
+void test_exstr_split_substr(void)
 {
-    char str[] = "0 1 2 3 4 5 6 7 8 9 10 11 12";
+    char str[] = "0:;1:;2:;3:;4:;5:;6:;7:;8:;9:;10:;11:;12:13:;14;15";
     char **parts = NULL;
-    int size = ex_str_split(str, " ", &parts);
+    int size = ex_str_split_substr(str, ":;", &parts);
     int i = 0;
 
-    for (; i < size; ++i) {
+    for (; i < size - 2; ++i) {
+        if(i != 12 && i != 13){
+            CU_ASSERT(i == atoi(parts[i]));
+        } else if(i == 12) {
+            CU_ASSERT(strcmp(parts[i], "12:13") == 0);
+        } else if(i == 13) {
+            CU_ASSERT(strcmp(parts[i], "14:15") == 0);
+        }
+    }
+
+    ex_str_split_free(parts, size);
+}
+
+void test_exstr_split_charset(void)
+{
+    char str[] = "0:;1:;2:;3:;4:;5:;6:;7:;8:;9:;10:;11:;12:13:;14;15";
+    char **parts = NULL;
+    int size = ex_str_split_charset(str, ":;", &parts);
+    int i = 0;
+
+    for (; i < size - 2; ++i) {
         CU_ASSERT(i == atoi(parts[i]));
     }
 
@@ -73,6 +93,7 @@ void add_test_ex_string(void)
     CU_add_test(suite, "ex_str_dup", test_exstr_dup);
     CU_add_test(suite, "ex_str_starts_with", test_exstr_starts_with);
     CU_add_test(suite, "ex_str_ends_with", test_exstr_ends_with);
-    CU_add_test(suite, "ex_str_split", test_exstr_split);
+    CU_add_test(suite, "ex_str_split_substr", test_exstr_split_substr);
+    CU_add_test(suite, "ex_str_split_charset", test_exstr_split_charset);
 }
 
