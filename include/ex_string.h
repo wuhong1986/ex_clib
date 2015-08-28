@@ -15,6 +15,7 @@ extern "C" {
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <time.h>
 
 char* ex_strdup(const char *str);
 char* ex_strndup(const char *str, size_t n);
@@ -41,6 +42,9 @@ const char* ex_str_BOOL(bool value);
 const char* ex_str_onoff(bool value);
 const char* ex_str_OnOff(bool value);
 const char* ex_str_ONOFF(bool value);
+const char* ex_strtime_t_now(void);
+const char* ex_strtime_t(time_t time_val);
+const char* ex_strbytesize(double size);
 
 #ifdef __cplusplus
 }

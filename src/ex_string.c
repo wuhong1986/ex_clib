@@ -279,3 +279,42 @@ const char* ex_str_ONOFF(bool value)
 {
     return value ? "ON" : "OFF";
 }
+
+const char* ex_strtime_t(time_t time_val)
+{
+    static char str[32] = {0};
+
+    time_t time_now    = time_val;
+    struct tm* tm_time = localtime(&time_now);
+
+    memset(str, 0, sizeof(str));
+    sprintf(str, "%04d-%02d-%02d %02d:%02d:%02d",
+            tm_time->tm_year + 1900, tm_time->tm_mon + 1, tm_time->tm_mday,
+            tm_time->tm_hour, tm_time->tm_min, tm_time->tm_sec);
+
+    return str;
+}
+
+const char* ex_strtime_t_now(void)
+{
+    return ex_strtime_t(time(NULL));
+}
+
+const char* ex_strbytesize(double size)
+{
+    static char str[128] = {0};
+
+    if(size < 1024){
+        sprintf(str, "%g B", size);
+    } else if(size < 1024.0 * 1024){
+        sprintf(str, "%.2f KB", size / 1024.0);
+    } else if(size < 1024.0 * 1024 * 1024){
+        sprintf(str, "%.2f MB", size / 1024.0 / 1024.0);
+    } else if(size < 1024.0 * 1024.0 * 1024.0 * 1024.0){
+        sprintf(str, "%.2f GB", size / 1024.0 / 1024.0 / 1024.0);
+    } else {
+        sprintf(str, "%.2f TB", size / 1024.0 / 1024.0 / 1024.0 / 1024.0);
+    }
+
+    return str;
+}
