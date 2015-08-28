@@ -27,6 +27,20 @@
 #define PATH_SEPARATOR   "/"
 #endif
 
+bool readable_timed(int fd, unsigned int msec)
+{
+    fd_set rfds;
+    struct timeval tv;
+
+    FD_ZERO(&rfds);
+    FD_SET(fd, &rfds);
+
+    tv.tv_sec  = msec / 1000;
+    tv.tv_usec = msec % 1000 * 1000;
+
+    return select(fd + 1, &rfds, NULL, NULL, &tv);
+}
+
 #ifdef __linux__
 /* ssize_t read_timed(int fd, void *buf, size_t count, unsigned int msec) */
 static ssize_t read_timed_once(int fd, void *buf, size_t count, unsigned int msec)

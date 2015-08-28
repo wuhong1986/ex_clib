@@ -25,6 +25,8 @@ extern "C" {
 #include <sys/stat.h>
 #endif
 
+bool readable_timed(int fd, unsigned int msec);
+
 #ifdef __linux__
 ssize_t read_timed(int fd, void *buf, size_t count, unsigned int msec);
 #endif
